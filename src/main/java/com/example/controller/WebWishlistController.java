@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+// (RequestParam/PostMapping/PathVariable kommer fra wildcard-importen ovenfor)
 
 /**
  * Controller: håndterer ønskesedler (flere pr. bruger).
@@ -95,5 +96,36 @@ public class WebWishlistController {
                     return "sharedWishlist";
                 })
                 .orElse("wishlistNotFound");
+    }
+
+    //  RESERVER ØNSKE (gæst, via delingslink)
+    @PostMapping("/share/{shareId}/reserve/{wishId}")
+    public String reserveSharedWish(@PathVariable String shareId,
+                                    @PathVariable Long wishId,
+                                    @RequestParam String name) {
+        return wishlistService.getWishlistByShareId(shareId)
+                .map(w -> {
+                    if (name != null && !name.isBlank()) {
+                        wishService.reserveWish(wishId, name.trim());
+                    }
+                    return "redirect:/wishes/share/" + shareId;
+                })
+                .orElse("redirect:/");
+    }
+
+    //  OPHÆV RESERVATION (kun ejer af listen)
+    @PostMapping("/share/{shareId}/cancel/{wishId}")
+    public String cancelSharedReservation(@PathVariable String shareId,
+                                          @PathVariable Long wishId,
+                                          HttpSession session) {
+        User currentUser = (User) session.getAttribute("currentUser");
+        return wishlistService.getWishlistByShareId(shareId)
+                .map(w -> {
+                    if (currentUser != null && w.getUser().getId().equals(currentUser.getId())) {
+                        wishService.cancelReservation(wishId);
+                    }
+                    return "redirect:/wishes/share/" + shareId;
+                })
+                .orElse("redirect:/");
     }
 }

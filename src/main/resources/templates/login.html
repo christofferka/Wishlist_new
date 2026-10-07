@@ -1,52 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Login | HaqqWish</title>
-    <!-- Henter Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head th:replace="~{fragments/layout :: head('Log ind')}"></head>
+<body>
 
-<!-- Baggrund og centrering -->
-<body class="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 min-h-screen flex items-center justify-center text-gray-100 font-sans">
+<section class="auth">
+    <div class="stage">
+        <a th:href="@{/}" class="brand">
+            <span class="mark">W</span>
+            <span>Wishlist</span>
+        </a>
+        <h1>Velkommen tilbage</h1>
+        <p class="lede">Log ind og se dine ønskesedler.</p>
 
-<!-- Login-boksen -->
-<div class="bg-blue-950/50 backdrop-blur-md rounded-2xl shadow-xl p-10 w-full max-w-md border border-blue-800/50">
+        <form class="form" th:action="@{/login}" th:object="${user}" method="post">
+            <div class="field">
+                <label for="email">E-mail</label>
+                <input id="email" type="email" th:field="*{email}" required placeholder="dig@eksempel.dk">
+            </div>
+            <div class="field">
+                <label for="password">Adgangskode</label>
+                <input id="password" type="password" th:field="*{password}" required placeholder="••••••••">
+            </div>
 
-    <!-- Overskrift -->
-    <h1 class="text-4xl font-bold text-center text-yellow-400 mb-8">Velkommen tilbage</h1>
+            <div th:if="${error}" class="alert error" th:text="${error}"></div>
 
-    <!-- Formularen sender data til /login hvor controlleren håndterer login-logikken -->
-    <form th:action="@{/login}" th:object="${user}" method="post" class="space-y-6">
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Log ind</button>
+                <a th:href="@{/register}" class="btn ghost">Opret konto</a>
+            </div>
+        </form>
 
-        <!-- Email -->
-        <div>
-            <label class="block text-yellow-300 mb-1">Email</label>
-            <input type="email" th:field="*{email}" class="w-full rounded px-3 py-2 text-gray-900" required>
+        <div class="demo-hint">
+            <b>Demo:</b> brug <code>demo@wishlist.dk</code> / <code>demo1234</code>
         </div>
 
-        <!-- Adgangskode -->
-        <div>
-            <label class="block text-yellow-300 mb-1">Adgangskode</label>
-            <input type="password" th:field="*{password}" class="w-full rounded px-3 py-2 text-gray-900" required>
+        <p class="alt">
+            Har du ikke en konto?
+            <a th:href="@{/register}">Opret her</a>
+        </p>
+    </div>
+
+    <aside class="showcase">
+        <div class="inner">
+            <h2>Hold styr på drømmene — del dem nemt.</h2>
+            <p>Opret flere ønskesedler, tilføj pris og link, og del hver seddel med et unikt link til familie og venner.</p>
+            <div class="points">
+                <div class="point"><span class="dot">1</span><span>Opret en ønskeseddel på få sekunder</span></div>
+                <div class="point"><span class="dot">2</span><span>Tilføj dine ønsker med link og pris</span></div>
+                <div class="point"><span class="dot">3</span><span>Del linket med dem, der skal give gaver</span></div>
+            </div>
         </div>
-
-        <!-- Viser fejlbesked hvis login mislykkes -->
-        <div th:if="${error}" class="text-red-400 text-sm text-center" th:text="${error}"></div>
-
-        <!-- Login-knap -->
-        <button type="submit"
-                class="w-full bg-yellow-400 text-blue-900 font-semibold py-2 rounded-lg hover:bg-yellow-300 transition">
-            Log ind
-        </button>
-    </form>
-
-    <!-- Link til registrering hvis brugeren ikke har en konto -->
-    <p class="text-center text-gray-300 mt-6">
-        Har du ikke en konto?
-        <a href="/register" class="text-yellow-300 hover:text-yellow-100 font-semibold">Opret her</a>
-    </p>
-</div>
+    </aside>
+</section>
 
 </body>
 </html>

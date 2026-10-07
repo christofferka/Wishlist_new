@@ -1,117 +1,92 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${wishlist.name} + ' | HaqqWish'">Mine Ønsker | HaqqWish</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head th:replace="~{fragments/layout :: head(${wishlist.name})}"></head>
+<body>
 
-<body class="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 min-h-screen text-white font-sans">
+<header th:replace="~{fragments/layout :: header('lists')}"></header>
 
-<!-- Navbar -->
-<nav class="flex justify-between items-center px-10 py-6 bg-blue-950/70 backdrop-blur-md shadow-lg border-b border-blue-800/50 fixed top-0 left-0 w-full z-50">
-    <a href="/" class="flex items-center space-x-2 group">
-        <div class="bg-white rounded-full w-9 h-9 flex items-center justify-center text-sky-600 font-bold text-xl group-hover:scale-110 transition">☁</div>
-        <h1 class="text-2xl font-bold tracking-tight group-hover:text-yellow-300 transition">HaqqWish</h1>
-    </a>
-    <div class="space-x-6">
-        <a href="/wishes/lists"
-           class="text-gray-300 hover:text-yellow-200 transition">Mine ønskesedler</a>
-
-        <!-- KORRIGERET LINK til tilføj nyt ønske -->
-        <a th:href="@{'/wish/add/' + ${wishlist.id}}"
-           class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition">
-            + Nyt Ønske
-        </a>
-
-        <a href="/logout" class="text-gray-300 hover:text-yellow-200 transition">Log ud</a>
+<main class="page">
+    <div class="crumbs">
+        <a th:href="@{/wishes/lists}">Mine ønskesedler</a>
+        <span class="sep">/</span>
+        <span class="current" th:text="${wishlist.name}">Navn</span>
     </div>
-</nav>
 
-<!-- Header -->
-<header class="text-center mt-32 mb-8">
-    <h2 class="text-4xl font-bold text-yellow-400 drop-shadow-md" th:text="${wishlist.name}">Mine Ønsker</h2>
-    <p class="text-gray-300 mt-2">Se, rediger eller slet dine gemte ønsker</p>
-
-    <!-- Delingssektion -->
-    <div class="mt-8">
-        <p class="text-gray-400 text-sm mb-2">Del din ønskeseddel med venner og familie:</p>
-
-        <div class="flex justify-center items-center gap-3 flex-wrap">
-            <input id="shareLink" type="text"
-                   th:value="@{'https://haqqwish.azurewebsites.net/wishes/share/' + ${wishlist.shareId}}"
-                   readonly
-                   class="bg-blue-950/50 border border-blue-800/60 rounded-lg px-4 py-2 text-gray-200 w-80 text-center select-all text-sm">
-            <button onclick="copyShareLink()"
-                    class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition">
-                Kopiér link
-            </button>
+    <div class="page-head">
+        <div class="title-block">
+            <span class="eyebrow">🎁 Ønskeseddel</span>
+            <h1 th:text="${wishlist.name}">Navn</h1>
+            <p class="lede">Tilføj, rediger eller slet dine ønsker. Del linket med dem, der skal give gaver.</p>
         </div>
-
-        <p id="copyMsg" class="text-green-400 text-sm mt-2 hidden">✔️ Link kopieret!</p>
+        <div class="actions">
+            <a th:href="@{'/wish/add/' + ${wishlist.id}}" class="btn primary">+ Nyt ønske</a>
+        </div>
     </div>
-</header>
 
-<!-- Ønskeliste -->
-<main class="max-w-5xl mx-auto px-6 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-    <div th:each="wish : ${wishes}"
-         class="bg-blue-950/50 border border-blue-800/60 rounded-2xl shadow-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300">
-
-        <!-- Illustration -->
-        <div class="h-40 bg-gradient-to-tr from-blue-600 via-blue-700 to-blue-800 flex items-center justify-center text-5xl text-yellow-300">
-            🎁
+    <section class="card mb-6">
+        <div class="card-head">
+            <h3>Delingslink</h3>
+            <span class="eyebrow sun">Send til familien</span>
         </div>
+        <div class="share-field">
+            <input id="share-link" type="text" readonly
+                   th:value="@{|/wishes/share/${wishlist.shareId}|}">
+            <button type="button" onclick="copyShareLink()">Kopiér fuldt link</button>
+            <a th:href="@{'/wishes/share/' + ${wishlist.shareId}}" class="btn ghost sm" target="_blank">Åbn</a>
+        </div>
+        <p class="hint" style="margin-top:10px; font-size: 12.5px; color: var(--ink-3);">
+            Alle med linket kan se og reservere ønsker — men ikke redigere.
+        </p>
+    </section>
 
-        <!-- Indhold -->
-        <div class="p-6 space-y-3">
-            <h3 class="text-2xl font-bold text-yellow-300 truncate" th:text="${wish.description}"></h3>
+    <div th:if="${wishes.isEmpty()}" class="empty">
+        <span class="em">✨</span>
+        <strong>Ingen ønsker endnu</strong>
+        <span>Tilføj dit første ønske med knappen ovenfor.</span>
+    </div>
 
-            <p class="text-gray-300 text-sm break-all">
-                <a th:href="${wish.link}" target="_blank"
-                   class="underline hover:text-yellow-200" th:text="${wish.link}"></a>
-            </p>
+    <div class="grid-3" th:unless="${wishes.isEmpty()}">
+        <article class="wish-card"
+                 th:each="wish, iter : ${wishes}"
+                 th:classappend="${wish.reserved} ? 'reserved' : ''"
+                 th:attr="data-stagger=${iter.index + 1}">
+            <span class="ribbon" th:if="${wish.reserved}">Reserveret</span>
+            <div class="wish-title" th:text="${wish.description}">Beskrivelse</div>
 
-            <p class="text-lg font-semibold text-gray-100" th:text="${wish.price} + ' DKK'"></p>
+            <a th:if="${wish.link}" th:href="${wish.link}" class="wish-link" target="_blank" rel="noopener">
+                🔗 <span th:text="${wish.link}">link</span>
+            </a>
 
-            <!-- Knapper -->
-            <div class="flex justify-between items-center pt-4">
-                <!-- KORRIGERET LINKS -->
-                <a th:href="@{'/wish/edit/' + ${wish.id}}"
-                   class="bg-blue-500 hover:bg-blue-400 px-4 py-2 rounded-lg text-white font-medium transition block text-center">
-                    Rediger
-                </a>
-                <a th:href="@{'/wish/delete/' + ${wish.id}}"
-                   onclick="return confirm('Er du sikker på, at du vil slette dette ønske?');"
-                   class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg text-white font-medium transition block text-center">
-                    Slet
-                </a>
+            <div class="wish-price">
+                <span class="num" th:text="${#numbers.formatDecimal(wish.price,1,'POINT',2,'COMMA')}">0,00</span>
+                <span class="cur">kr</span>
             </div>
-        </div>
+
+            <div th:if="${wish.reserved}" class="reserved-by">
+                🤝 Reserveret af <span style="margin-left:4px;" th:text="${wish.reservedBy}">navn</span>
+            </div>
+
+            <div class="wish-actions">
+                <a th:href="@{'/wish/edit/' + ${wish.id}}" class="btn ghost sm">Rediger</a>
+                <a th:href="@{'/wish/delete/' + ${wish.id}}" class="btn danger sm"
+                   onclick="return confirm('Slet dette ønske?');">Slet</a>
+            </div>
+        </article>
     </div>
 </main>
 
-<!-- Tom tilstand -->
-<section th:if="${#lists.isEmpty(wishes)}" class="text-center mt-20 text-gray-400">
-    <p>Du har endnu ingen ønsker på denne ønskeseddel. Klik på
-        <a th:href="@{'/wish/add/' + ${wishlist.id}}" class="text-yellow-300 underline hover:text-yellow-200">Tilføj nyt ønske</a>.
-    </p>
-</section>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 
-<!-- Footer -->
-<footer class="text-center mt-20 py-6 text-sm text-gray-400 border-t border-blue-800/50">
-    © 2025 HaqqWish — Alle dine ønsker samlet ét sted
-</footer>
-
-<!-- Script -->
 <script>
     function copyShareLink() {
-        const input = document.getElementById("shareLink");
-        input.select();
-        input.setSelectionRange(0, 99999);
-        document.execCommand("copy");
-        const msg = document.getElementById("copyMsg");
-        msg.classList.remove("hidden");
-        setTimeout(() => msg.classList.add("hidden"), 2000);
+        const input = document.getElementById('share-link');
+        const url = window.location.origin + input.value;
+        navigator.clipboard.writeText(url).then(() => {
+            const btn = event.target;
+            const original = btn.textContent;
+            btn.textContent = '✔ Kopieret!';
+            setTimeout(() => btn.textContent = original, 1600);
+        });
     }
 </script>
 

@@ -1,0 +1,10 @@
+target/
+.idea/
+*.iml
+.git/
+.gitignore
+.DS_Store
+HELP.md
+README.md
+Qonana analyse.pdf
+qodana.yaml

@@ -1,94 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="'Ønskeseddel fra ' + ${owner} + ' | HaqqWish'">Ønskeseddel | HaqqWish</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head th:replace="~{fragments/layout :: head('Delt ønskeseddel')}"></head>
+<body>
 
-<body class="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white font-sans min-h-screen flex flex-col">
+<header th:replace="~{fragments/layout :: header('home')}"></header>
 
-<!-- Navbar -->
-<nav class="px-10 py-6 bg-blue-950/70 backdrop-blur-md border-b border-blue-800/50 flex justify-between items-center">
-    <a href="/" class="flex items-center space-x-2 group">
-        <div class="bg-white rounded-full w-9 h-9 flex items-center justify-center text-sky-600 font-bold text-xl group-hover:scale-110 transition">☁</div>
-        <h1 class="text-2xl font-bold tracking-tight group-hover:text-yellow-300 transition">HaqqWish</h1>
-    </a>
-    <a href="/" class="text-yellow-300 hover:text-yellow-200 transition">Til forsiden</a>
-</nav>
-
-<!-- Hovedindhold -->
-<main class="flex-1 px-6 sm:px-10 lg:px-20 py-16 max-w-6xl mx-auto">
-
-    <!-- Header -->
-    <header class="text-center mb-14">
-        <h2 class="text-4xl font-extrabold text-yellow-300 mb-2" th:text="${wishlist.name} ?: 'Ønskeseddel'"></h2>
-        <p class="text-gray-300">Oprettet af <span class="text-yellow-200 font-semibold" th:text="${owner}"></span></p>
-    </header>
-
-    <!-- Ønsker grid -->
-    <section class="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        <div th:each="wish : ${wishes}"
-             class="bg-blue-950/50 border border-blue-800/60 rounded-2xl shadow-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col justify-between">
-
-            <div class="p-6 flex-1 flex flex-col justify-between">
-                <!-- Ønskeinfo -->
-                <div class="mb-6">
-                    <h3 class="text-2xl font-bold text-yellow-300 mb-2" th:text="${wish.description}"></h3>
-                    <p class="text-sm mb-2">
-                        <a th:href="${wish.link}" target="_blank"
-                           class="underline text-yellow-200 hover:text-yellow-100 break-all">Se varen</a>
-                    </p>
-                    <p class="text-gray-300 font-medium">Pris: <span th:text="${wish.price}"></span> DKK</p>
-                </div>
-
-                <!-- Reservation -->
-                <div>
-                    <!-- Hvis ønsket er reserveret -->
-                    <div th:if="${wish.reserved}" class="bg-blue-900/40 border border-blue-800/40 rounded-xl p-4 text-center">
-                        <p class="text-yellow-300 font-semibold">
-                            Reserveret af: <span class="text-white" th:text="${wish.reservedBy}"></span>
-                        </p>
-
-                        <!-- Ophæv reservation (kun ejer) -->
-                        <div th:if="${session.currentUser != null}" class="mt-3">
-                            <form th:action="@{'/wishes/share/' + ${wishlist.shareId} + '/cancel/' + ${wish.id}}" method="post">
-                                <button type="submit"
-                                        class="bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg transition">
-                                    Ophæv reservation
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Hvis ønsket ikke er reserveret -->
-                    <div th:if="${!wish.reserved}">
-                        <form th:action="@{'/wishes/share/' + ${wishlist.shareId} + '/reserve/' + ${wish.id}}" method="post" class="space-y-3">
-                            <label for="name" class="block text-gray-200 text-sm">Dit navn:</label>
-                            <input type="text" id="name" name="name" placeholder="Fx Ahmed eller Fatima"
-                                   class="w-full rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-300"
-                                   required>
-                            <button type="submit"
-                                    class="w-full bg-yellow-400 text-blue-900 font-semibold py-2 rounded-lg hover:bg-yellow-300 transition">
-                                Reserver dette ønske
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+<main class="page">
+    <div class="page-head">
+        <div class="title-block">
+            <span class="eyebrow">🎁 Delt ønskeseddel</span>
+            <h1 th:text="${wishlist.name}">Ønskeseddel</h1>
+            <p class="lede">
+                Oprettet af <strong style="color: var(--ink);" th:text="${owner}">Navn</strong>.
+                Reserver et ønske for at vise, at <em>du</em> giver det — så undgår I dobbeltgaver.
+            </p>
         </div>
-    </section>
+    </div>
 
-    <!-- Tom ønskeseddel -->
-    <div th:if="${#lists.isEmpty(wishes)}" class="text-center mt-20 text-gray-400">
-        <p>Ingen ønsker er tilføjet endnu.</p>
+    <div th:if="${wishes.isEmpty()}" class="empty">
+        <span class="em">✨</span>
+        <strong>Ingen ønsker endnu</strong>
+        <span>Ejeren har endnu ikke tilføjet noget til denne seddel.</span>
+    </div>
+
+    <div class="grid-3" th:unless="${wishes.isEmpty()}">
+        <article class="wish-card"
+                 th:each="wish, iter : ${wishes}"
+                 th:classappend="${wish.reserved} ? 'reserved' : ''"
+                 th:attr="data-stagger=${iter.index + 1}">
+            <span class="ribbon" th:if="${wish.reserved}">Reserveret</span>
+            <div class="wish-title" th:text="${wish.description}">Beskrivelse</div>
+
+            <a th:if="${wish.link}" th:href="${wish.link}" class="wish-link" target="_blank" rel="noopener">
+                🔗 <span th:text="${wish.link}">link</span>
+            </a>
+
+            <div class="wish-price">
+                <span class="num" th:text="${#numbers.formatDecimal(wish.price,1,'POINT',2,'COMMA')}">0,00</span>
+                <span class="cur">kr</span>
+            </div>
+
+            <!-- Allerede reserveret -->
+            <div th:if="${wish.reserved}" class="reserved-by">
+                🤝 Reserveret af <span style="margin-left:4px;" th:text="${wish.reservedBy}">navn</span>
+            </div>
+
+            <!-- Reservations-form (gæst) -->
+            <form th:unless="${wish.reserved}"
+                  th:action="@{'/wishes/share/' + ${wishlist.shareId} + '/reserve/' + ${wish.id}}"
+                  method="post"
+                  class="wish-actions"
+                  style="flex-direction: column; align-items: stretch; gap: 8px;">
+                <div class="field" style="gap: 4px;">
+                    <input type="text" name="name" required maxlength="40" placeholder="Dit navn, fx 'Mor'">
+                </div>
+                <button type="submit" class="btn primary sm">Reserver dette ønske</button>
+            </form>
+        </article>
     </div>
 </main>
 
-<!-- Footer -->
-<footer class="text-center py-8 text-sm text-gray-400 border-t border-blue-800/40 bg-blue-950/40">
-    © 2025 HaqqWish — Del dine ønsker med familie og venner
-</footer>
-
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

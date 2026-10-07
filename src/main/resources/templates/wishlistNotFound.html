@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head th:replace="~{fragments/layout :: head('Ønskeseddel ikke fundet')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: header('home')}"></header>
+
+<main class="page">
+    <div class="err">
+        <div class="code">404</div>
+        <h1>Vi kan ikke finde den ønskeseddel</h1>
+        <p>Linket er måske udløbet, forkert eller er blevet slettet af ejeren.</p>
+        <a th:href="@{/}" class="btn primary">Til forsiden</a>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

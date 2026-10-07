@@ -1,88 +1,86 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Mine Ønskesedler | HaqqWish</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head th:replace="~{fragments/layout :: head('Mine ønskesedler')}"></head>
+<body>
 
-<body class="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 min-h-screen text-white font-sans">
+<header th:replace="~{fragments/layout :: header('lists')}"></header>
 
-<!-- Navbar -->
-<nav class="flex justify-between items-center px-10 py-6 bg-blue-950/70 backdrop-blur-md shadow-lg border-b border-blue-800/50 fixed top-0 left-0 w-full z-50">
-    <a href="/" class="flex items-center space-x-2 group">
-        <div class="bg-white rounded-full w-9 h-9 flex items-center justify-center text-sky-600 font-bold text-xl group-hover:scale-110 transition">☁</div>
-        <h1 class="text-2xl font-bold tracking-tight group-hover:text-yellow-300 transition">HaqqWish</h1>
-    </a>
-    <div class="space-x-6">
-        <a href="/logout" class="text-gray-300 hover:text-yellow-200 transition">Log ud</a>
-    </div>
-</nav>
-
-<!-- Page header -->
-<header class="text-center mt-32 mb-10">
-    <h2 class="text-4xl font-bold text-yellow-400 drop-shadow-md">Mine Ønskesedler</h2>
-    <p class="text-gray-300 mt-2">Opret, del, rediger eller slet dine ønskesedler</p>
-</header>
-
-<!-- Opret ny ønskeseddel -->
-<section class="max-w-xl mx-auto bg-blue-950/50 border border-blue-800/50 rounded-2xl p-6 shadow-lg mb-12 text-center">
-    <h3 class="text-2xl font-semibold text-yellow-300 mb-4">+ Opret ny ønskeseddel</h3>
-
-    <form th:action="@{/wishes/createList}" method="post" class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <input type="text" name="name" placeholder="Navn på ønskeseddel"
-               required
-               class="flex-1 px-4 py-2 rounded-lg bg-blue-900/50 border border-blue-800/70 text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 placeholder-gray-400">
-        <button type="submit"
-                class="bg-yellow-400 text-blue-900 px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition">
-            Opret
-        </button>
-    </form>
-</section>
-
-<!-- All wishlists -->
-<main class="max-w-5xl mx-auto px-6 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-    <div th:each="list : ${wishlists}"
-         class="bg-blue-950/50 backdrop-blur-md border border-blue-800/60 rounded-2xl shadow-xl p-6 hover:scale-[1.02] transition-transform duration-300">
-
-        <!-- Titel -->
-        <h3 class="text-2xl font-bold text-yellow-300 truncate mb-2" th:text="${list.name}"></h3>
-
-        <!-- Delingslink -->
-        <div class="text-sm text-gray-300 mb-4">
-            <p>Delingslink:</p>
-            <input type="text" readonly
-                   th:value="@{'https://haqqwish.azurewebsites.net/wishes/share/' + ${list.shareId}}"
-                   class="bg-blue-950/50 border border-blue-800/60 rounded px-2 py-1 w-full text-gray-200 text-sm select-all">
+<main class="page">
+    <div class="page-head">
+        <div class="title-block">
+            <h1>Mine ønskesedler</h1>
+            <p class="lede">Opret, del og administrer dine ønskesedler. Hver seddel får sit eget delingslink.</p>
         </div>
+    </div>
 
-        <!-- Knapper -->
-        <div class="flex justify-between items-center pt-2">
-            <a th:href="@{'/wishes/viewlist/' + ${list.id}}"
-               class="bg-yellow-400 text-blue-900 font-semibold px-4 py-2 rounded-lg hover:bg-yellow-300 transition">
-                Åbn
-            </a>
+    <section class="card mb-6">
+        <div class="card-head">
+            <h3>Ny ønskeseddel</h3>
+            <span class="eyebrow sun">🎁 Hurtig oprettelse</span>
+        </div>
+        <form class="form wide" th:action="@{/wishes/createList}" th:object="${newWishlist}" method="post"
+              style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+            <div class="field" style="flex:1; min-width: 260px;">
+                <label for="name">Navn på ønskeseddel</label>
+                <input id="name" type="text" th:field="*{name}" required placeholder="Fx 'Jul 2025'">
+            </div>
+            <button type="submit" class="btn primary">+ Opret ønskeseddel</button>
+        </form>
+    </section>
 
-            <div class="flex space-x-3">
-                <a th:href="@{'/wishes/editlist/' + ${list.id}}"
-                   class="text-yellow-200 hover:text-yellow-100 font-medium">Rediger</a>
-                <a th:href="@{'/wishes/deletelist/' + ${list.id}}"
-                   onclick="return confirm('Er du sikker på, at du vil slette denne ønskeseddel?');"
-                   class="text-red-400 hover:text-red-300 font-medium">Slet</a>
+    <div th:if="${wishlists.isEmpty()}" class="empty">
+        <span class="em">🎁</span>
+        <strong>Ingen ønskesedler endnu</strong>
+        <span>Lav din første ønskeseddel ovenfor — det tager under et minut.</span>
+    </div>
+
+    <div class="grid-3" th:unless="${wishlists.isEmpty()}">
+        <div class="wl-card"
+             th:each="list, iter : ${wishlists}"
+             th:classappend="'g' + ${(iter.index % 6) + 1}"
+             th:attr="data-stagger=${iter.index + 1}">
+            <h3 th:text="${list.name}">Navn</h3>
+            <div class="meta-row">
+                <div>
+                    <div class="k">Ønsker</div>
+                    <div class="v" th:text="${list.wishes.size()}">0</div>
+                </div>
+                <div>
+                    <div class="k">Reserveret</div>
+                    <div class="v" th:text="${#lists.size(list.wishes.?[reserved])}">0</div>
+                </div>
+            </div>
+
+            <div class="share-field">
+                <input type="text" readonly
+                       th:value="@{|/wishes/share/${list.shareId}|}"
+                       th:id="'share-' + ${list.id}">
+                <button type="button" th:onclick="|copyShare('share-${list.id}', this)|">Kopiér</button>
+            </div>
+
+            <div class="actions-row">
+                <a th:href="@{'/wishes/viewlist/' + ${list.id}}" class="btn primary sm">Åbn</a>
+                <a th:href="@{'/wishes/share/' + ${list.shareId}}" class="btn ghost sm" target="_blank">Vis delt</a>
+                <a th:href="@{'/wishes/deletelist/' + ${list.id}}" class="btn danger sm"
+                   onclick="return confirm('Slet denne ønskeseddel?');">Slet</a>
             </div>
         </div>
     </div>
 </main>
 
-<!-- Empty state -->
-<section th:if="${#lists.isEmpty(wishlists)}" class="text-center mt-20 text-gray-400">
-    <p>Du har endnu ingen ønskesedler. Opret din første nedenfor.</p>
-</section>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 
-<!-- Footer -->
-<footer class="text-center mt-20 py-6 text-sm text-gray-400 border-t border-blue-800/50">
-    © 2025 HaqqWish — Alle dine ønsker samlet ét sted
-</footer>
+<script>
+    function copyShare(id, btn) {
+        const input = document.getElementById(id);
+        const url = window.location.origin + input.value;
+        navigator.clipboard.writeText(url).then(() => {
+            const original = btn.textContent;
+            btn.textContent = '✔ Kopieret';
+            setTimeout(() => btn.textContent = original, 1600);
+        });
+    }
+</script>
 
 </body>
 </html>

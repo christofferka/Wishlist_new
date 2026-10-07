@@ -3,7 +3,8 @@
 *.iml
 
 # Build folders
-../../target/
+target/
+build/
 
 # OS files
 .DS_Store

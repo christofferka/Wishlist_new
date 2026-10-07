@@ -1,78 +1,98 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>HaqqWish | Alle dine ønsker samlet ét sted</title>
-    <!-- Tailwind CSS til design og layout -->
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head th:replace="~{fragments/layout :: head('Alle dine ønsker samlet ét sted')}"></head>
+<body>
 
-<!-- Baggrund og skrifttype for hele siden -->
-<body class="bg-gradient-to-r from-sky-500 via-sky-600 to-sky-700 text-white font-sans">
+<header th:replace="~{fragments/layout :: header('home')}"></header>
 
-<!-- ===========================
-     NAVIGATION BAR
-     =========================== -->
-<nav class="flex justify-between items-center px-10 py-6 bg-white/10 backdrop-blur-md shadow-lg">
-    <div class="flex items-center space-x-2">
-        <!-- Logo -->
-        <div class="bg-white rounded-full w-9 h-9 flex items-center justify-center text-sky-600 font-bold text-xl">☁</div>
-        <h1 class="text-2xl font-bold tracking-tight">HaqqWish</h1>
+<section class="hero">
+    <span class="eyebrow">🎁 En ønskeseddel med personlighed</span>
+    <h1>Dine ønsker, <em>klippet ud</em> og klistret op.</h1>
+    <p class="lede">
+        Wishlist er den digitale version af den gamle gavetavle. Saml dine ønsker,
+        del linket med familien, og lad dem hemmeligt reservere — så ingen
+        giver det samme.
+    </p>
+    <div class="cta-row">
+        <a th:href="@{/register}" class="btn primary lg">Lav din første ønskeseddel <span class="arrow">→</span></a>
+        <a th:href="@{/login}" class="btn ghost lg">Jeg har en konto</a>
     </div>
+    <p class="scribble">✦ gratis for altid — ingen kreditkort</p>
 
-    <!-- Login og Opret knapper -->
-    <div class="space-x-6">
-        <a href="/login" class="hover:text-yellow-300 transition">LOG IND</a>
-        <a href="/register" class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition">
-            OPRET
-        </a>
-    </div>
-</nav>
-
-<!-- HERO SEKTION -->
-<section class="flex flex-col lg:flex-row items-center justify-between px-10 lg:px-20 py-24">
-
-    <!-- VENSTRE SIDE: Tekstindhold -->
-    <div class="max-w-lg space-y-6">
-        <!-- Stor overskrift -->
-        <h2 class="text-5xl lg:text-6xl font-extrabold leading-tight">
-            Alle dine ønsker <br> samlet <span class="text-yellow-300">ét sted</span>
-        </h2>
-
-        <!-- Kort beskrivelse -->
-        <p class="text-lg text-gray-100">
-            HaqqWish gør det nemt at samle, gemme og dele dine ønsker
-            - så dine venner og familie altid ved præcis, hvad du ønsker dig.
-        </p>
-
-        <!-- Knap til oprettelse -->
-        <div class="space-x-4 pt-4">
-            <a href="/register" class="bg-yellow-400 text-sky-900 px-6 py-3 rounded-lg font-semibold text-lg hover:bg-yellow-300 transition">
-                Kom i gang
-            </a>
+    <div class="hero-collage" style="margin-top: 56px;">
+        <div class="tag">
+            <span class="k">Jul 2025 · Christoffer</span>
+            <h4>Sony WH-1000XM5 høretelefoner</h4>
+            <span class="price">2.999 <small>kr</small></span>
+            <span class="mini-chip">Nyt ønske</span>
         </div>
-
-        <!-- QR-kode -->
-        <div class="pt-8">
-            <p class="text-gray-200 mb-2 font-medium">Få appen her:</p>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://haqqwish.app"
-                 alt="QR-kode til HaqqWish app" class="rounded-lg shadow-lg">
+        <div class="tag">
+            <span class="k">Jul 2025 · Christoffer</span>
+            <h4>Le Creuset gryde, 24 cm</h4>
+            <span class="price">1.899 <small>kr</small></span>
+            <span class="mini-chip ok">✓ Reserveret af Mor</span>
         </div>
-    </div>
-
-    <!-- HØJRE SIDE: Billede -->
-    <div class="relative mt-16 lg:mt-0 lg:w-1/2 flex justify-center">
-        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80"
-             alt="Rolig himmel, symbol på ønsker og håb"
-             class="rounded-3xl shadow-2xl border border-white/10 w-3/4 lg:w-full object-cover transform hover:scale-105 transition duration-700 ease-out">
-        <div class="absolute inset-0 bg-gradient-to-t from-sky-800/40 to-transparent rounded-3xl"></div>
+        <div class="tag">
+            <span class="k">Fødselsdag · Sofie</span>
+            <h4>Rejsegavekort til Berlin</h4>
+            <span class="price">3.000 <small>kr</small></span>
+            <span class="mini-chip">Nyt ønske</span>
+        </div>
     </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="text-center py-8 text-sm text-gray-200 bg-sky-800/40">
-    © 2025 HaqqWish · Udviklet med ☁ i Danmark
-</footer>
+<section class="feature-section">
+    <div class="head">
+        <span class="eyebrow sun">Hvorfor Wishlist?</span>
+        <h2>Alt du behøver — intet du ikke gør</h2>
+        <p class="lede" style="margin: 0 auto;">
+            Fra familie-jul til bryllupstavle. Hold dine ønsker opdateret ét sted,
+            og del dem med et enkelt link.
+        </p>
+    </div>
 
+    <div class="grid-3">
+        <div class="feat" data-stagger="1">
+            <div class="ic pink">🎁</div>
+            <h3>Flere ønskesedler</h3>
+            <p>Hold jul, fødselsdag og bryllup adskilt. Opret så mange sedler, du har brug for.</p>
+        </div>
+        <div class="feat" data-stagger="2">
+            <div class="ic sun">🔗</div>
+            <h3>Del med ét link</h3>
+            <p>Hvert ønskeseddel får sit eget delingslink. Send det til familien — ingen login nødvendigt.</p>
+        </div>
+        <div class="feat" data-stagger="3">
+            <div class="ic sky">🤫</div>
+            <h3>Hemmelige reservationer</h3>
+            <p>Dine gæster kan reservere ønsker uden du ser det — ingen dobbeltgaver.</p>
+        </div>
+        <div class="feat" data-stagger="4">
+            <div class="ic lime">💸</div>
+            <h3>Pris &amp; direkte links</h3>
+            <p>Tilføj pris og link til varen, så er det nemt for alle at finde præcis det, du vil have.</p>
+        </div>
+        <div class="feat" data-stagger="5">
+            <div class="ic pink">✏️</div>
+            <h3>Nemt at redigere</h3>
+            <p>Tilføj, rediger eller slet ønsker når som helst. Dine gæster ser altid den opdaterede version.</p>
+        </div>
+        <div class="feat" data-stagger="6">
+            <div class="ic sun">📱</div>
+            <h3>Virker overalt</h3>
+            <p>Telefon, tablet eller computer — Wishlist ser flot ud på alle skærme.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta-band">
+    <div class="inner">
+        <h2>Klar til at samle dine ønsker?</h2>
+        <p>Opret en gratis konto og lav din første ønskeseddel på under et minut.</p>
+        <a th:href="@{/register}" class="btn lime lg">Opret konto <span class="arrow">→</span></a>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

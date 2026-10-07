@@ -1,64 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Rediger Ønske | HaqqWish</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head th:replace="~{fragments/layout :: head('Rediger ønske')}"></head>
+<body>
 
-<body class="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 min-h-screen text-gray-100 font-sans">
+<header th:replace="~{fragments/layout :: header('lists')}"></header>
 
-<!-- Navigation -->
-<nav class="flex justify-between items-center px-10 py-6 bg-blue-950/70 backdrop-blur-md shadow-lg border-b border-blue-800/50 fixed top-0 left-0 w-full z-50">
-    <a href="/" class="flex items-center space-x-2 group">
-        <div class="bg-white rounded-full w-9 h-9 flex items-center justify-center text-sky-600 font-bold text-xl group-hover:scale-110 transition">☁</div>
-        <h1 class="text-2xl font-bold tracking-tight group-hover:text-yellow-300 transition">HaqqWish</h1>
-    </a>
-    <a th:href="@{'/wishes/viewlist/' + ${wish.wishlist.id}}" class="text-yellow-300 hover:text-yellow-100 font-medium">← Tilbage</a>
-</nav>
+<main class="page">
+    <div class="crumbs">
+        <a th:href="@{/wishes/lists}">Mine ønskesedler</a>
+        <span class="sep">/</span>
+        <a th:href="@{'/wishes/viewlist/' + ${wish.wishlist.id}}" th:text="${wish.wishlist.name}">Ønskeseddel</a>
+        <span class="sep">/</span>
+        <span class="current">Rediger</span>
+    </div>
 
-<!-- Formular -->
-<div class="max-w-md mx-auto mt-32 bg-blue-950/50 backdrop-blur-md rounded-2xl shadow-xl p-8 border border-blue-800/50">
-
-    <h1 class="text-3xl text-center font-bold text-yellow-400 mb-6">Rediger Ønske</h1>
-
-    <form th:action="@{'/wish/update/' + ${wish.id}}" th:object="${wish}" method="post" class="space-y-5">
-
-        <div>
-            <label class="block text-yellow-300 mb-1">Beskrivelse</label>
-            <input type="text" th:field="*{description}"
-                   class="w-full rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                   placeholder="Hvad ønsker du?" required>
+    <div class="page-head">
+        <div class="title-block">
+            <span class="eyebrow sun">✏️ Rediger ønske</span>
+            <h1>Opdater dit ønske</h1>
+            <p class="lede">Dine ændringer gemmes med det samme og vises også på det delte link.</p>
         </div>
+    </div>
 
-        <div>
-            <label class="block text-yellow-300 mb-1">Link</label>
-            <input type="url" th:field="*{link}"
-                   class="w-full rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                   placeholder="https://..." required>
-        </div>
+    <section class="card">
+        <form class="form" th:action="@{'/wish/update/' + ${wish.id}}" th:object="${wish}" method="post">
+            <div class="field">
+                <label for="description">Beskrivelse</label>
+                <input id="description" type="text" th:field="*{description}" required>
+            </div>
 
-        <div>
-            <label class="block text-yellow-300 mb-1">Pris (DKK)</label>
-            <input type="number" step="0.01" th:field="*{price}"
-                   class="w-full rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                   required>
-        </div>
+            <div class="form-row">
+                <div class="field">
+                    <label for="link">Link til varen</label>
+                    <input id="link" type="url" th:field="*{link}">
+                </div>
+                <div class="field">
+                    <label for="price">Pris (DKK)</label>
+                    <input id="price" type="number" step="0.01" th:field="*{price}">
+                </div>
+            </div>
 
-        <div class="flex justify-between pt-6">
-            <a th:href="@{'/wishes/viewlist/' + ${wish.wishlist.id}}"
-               class="text-yellow-300 hover:text-yellow-100 transition">← Tilbage</a>
-            <button type="submit"
-                    class="bg-yellow-400 text-blue-900 font-semibold py-2 px-5 rounded-lg hover:bg-yellow-300 transition">
-                Gem Ændringer
-            </button>
-        </div>
-    </form>
-</div>
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Gem ændringer</button>
+                <a th:href="@{'/wishes/viewlist/' + ${wish.wishlist.id}}" class="btn ghost">Annuller</a>
+            </div>
+        </form>
+    </section>
+</main>
 
-<footer class="text-center mt-20 py-6 text-sm text-gray-400 border-t border-blue-800/50">
-    © 2025 HaqqWish — Alle dine ønsker samlet ét sted
-</footer>
-
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>
