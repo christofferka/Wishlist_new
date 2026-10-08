@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="da">
-<head th:replace="~{fragments/layout :: head('Opret konto')}"></head>
+<head th:replace="~{fragments/layout :: head('Opret bruger')}"></head>
 <body>
 
 <section class="auth">
@@ -9,7 +9,7 @@
             <span class="mark">W</span>
             <span>Wishlist</span>
         </a>
-        <h1>Opret din konto</h1>
+        <h1>Opret din bruger</h1>
         <p class="lede">Gratis, uden kreditkort. Du er i gang på under et minut.</p>
 
         <form class="form" th:action="@{/register}" th:object="${user}" method="post">
@@ -30,13 +30,13 @@
             <div th:if="${error}" class="alert error" th:text="${error}"></div>
 
             <div class="form-actions">
-                <button type="submit" class="btn primary">Opret konto</button>
+                <button type="submit" class="btn primary">Opret bruger</button>
                 <a th:href="@{/login}" class="btn ghost">Log ind</a>
             </div>
         </form>
 
         <p class="alt">
-            Har du allerede en konto?
+            Har du allerede en bruger?
             <a th:href="@{/login}">Log ind her</a>
         </p>
     </div>
