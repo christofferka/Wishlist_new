@@ -14,8 +14,8 @@
 
         <form class="form" th:action="@{/login}" th:object="${user}" method="post">
             <div class="field">
-                <label for="email">E-mail</label>
-                <input id="email" type="email" th:field="*{email}" required placeholder="dig@eksempel.dk">
+                <label for="email">E-mail eller brugernavn</label>
+                <input id="email" type="text" th:field="*{email}" required placeholder="dig@eksempel.dk" autocomplete="username">
             </div>
             <div class="field">
                 <label for="password">Adgangskode</label>
