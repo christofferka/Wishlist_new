@@ -3,18 +3,17 @@
 ## Projektbeskrivelse
 Wishlist blev oprindeligt udviklet som en **webbaseret databaseapplikation**
 på 2. semester af Datamatikeruddannelsen (miniprojekt). Den oprindelige
-version brugte en **Spring Boot backend** med **MySQL**, **Thymeleaf frontend**
-og et CI/CD-opsæt via **GitHub Actions** og **Azure App Service**.
+version kørte Spring Boot mod MySQL og blev deployet til Azure App Service
+via GitHub Actions.
 
 Efter afleveringen har jeg arbejdet videre på projektet i min fritid:
-nyt moderne design, demo-profil med H2 så det kan køre uden database,
-Dockerfile til deploy på Render.com, hemmelige reservationer via delingslink
-og en række oprydninger (credentials ud af koden, env-var-baseret prod-config,
-m.m.).
+nyt scrapbook-inspireret design, demo-profil med H2 så det kan køre uden
+database, Dockerfile til deploy på **Render.com**, hemmelige reservationer
+via delingslink og en række oprydninger (credentials ud af koden,
+env-var-baseret prod-config, m.m.).
 
-Stack: **Spring Boot 3**, **Thymeleaf**, **JPA/Hibernate**, **MySQL** (prod)
-eller **H2** (demo). Design-inspiration fra Project Manager med egen twist i
-rose/amber-palet.
+**Stack:** Java 21, Spring Boot 3, Thymeleaf, JPA/Hibernate,
+SQL (MySQL i prod, H2 i demo), Docker, GitHub Actions (CI).
 
 ---
 

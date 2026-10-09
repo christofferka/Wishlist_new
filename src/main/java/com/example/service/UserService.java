@@ -2,34 +2,37 @@ package com.example.service;
 
 import com.example.model.User;
 import com.example.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Håndterer logik for registrering og login af brugere.
- */
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    // Dependency injection af repository
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // Registrerer en ny bruger, hvis e-mail ikke allerede findes
     public User registerUser(String username, String email, String password) {
+        if (username == null || email == null || password == null) return null;
+        username = username.trim();
+        email = email.trim().toLowerCase();
+        if (username.isEmpty() || email.isEmpty() || password.length() < 4) return null;
+
         if (userRepository.findByEmail(email) != null) {
-            return null; // e-mail er allerede i brug
+            return null;
         }
-        User user = new User(username, email, password);
+        User user = new User(username, email, passwordEncoder.encode(password));
         return userRepository.save(user);
     }
 
-    // Tjekker login med e-mail og password
     public User loginUser(String email, String password) {
-        User user = userRepository.findByEmail(email);
-        if (user != null && user.getPassword().equals(password)) {
+        if (email == null || password == null) return null;
+        User user = userRepository.findByEmail(email.trim().toLowerCase());
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return user;
         }
         return null;

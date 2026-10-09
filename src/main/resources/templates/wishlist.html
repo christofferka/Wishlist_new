@@ -19,33 +19,24 @@
             <p class="lede">Tilføj, rediger eller slet dine ønsker. Del linket med dem, der skal give gaver.</p>
         </div>
         <div class="actions">
-            <a th:href="@{'/wish/add/' + ${wishlist.id}}" class="btn primary">+ Nyt ønske</a>
+            <div class="share-bar">
+                <span class="share-bar-label">
+                    <span class="share-ic">🔗</span>
+                    <span>Delingslink</span>
+                </span>
+                <div class="share-bar-actions">
+                    <button type="button" class="share-pill" id="shareBtn"
+                            th:attr="data-share=@{|/wishes/share/${wishlist.shareId}|}"
+                            onclick="copyShare(this)">
+                        <span class="lbl">Kopiér link</span>
+                    </button>
+                    <a th:href="@{'/wishes/share/' + ${wishlist.shareId}}" class="btn ghost sm" target="_blank">Åbn</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <section class="card mb-6">
-        <div class="card-head">
-            <h3>Delingslink</h3>
-            <span class="eyebrow sun">Send til familien</span>
-        </div>
-        <div class="share-field">
-            <input id="share-link" type="text" readonly
-                   th:value="@{|/wishes/share/${wishlist.shareId}|}">
-            <button type="button" onclick="copyShareLink()">Kopiér fuldt link</button>
-            <a th:href="@{'/wishes/share/' + ${wishlist.shareId}}" class="btn ghost sm" target="_blank">Åbn</a>
-        </div>
-        <p class="hint" style="margin-top:10px; font-size: 12.5px; color: var(--ink-3);">
-            Alle med linket kan se og reservere ønsker, men ikke redigere.
-        </p>
-    </section>
-
-    <div th:if="${wishes.isEmpty()}" class="empty">
-        <span class="em">✨</span>
-        <strong>Ingen ønsker endnu</strong>
-        <span>Tilføj dit første ønske med knappen ovenfor.</span>
-    </div>
-
-    <div class="grid-3" th:unless="${wishes.isEmpty()}">
+    <div class="grid-3">
         <article class="wish-card"
                  th:each="wish, iter : ${wishes}"
                  th:classappend="${wish.reserved} ? 'reserved' : ''"
@@ -68,24 +59,51 @@
 
             <div class="wish-actions">
                 <a th:href="@{'/wish/edit/' + ${wish.id}}" class="btn ghost sm">Rediger</a>
-                <a th:href="@{'/wish/delete/' + ${wish.id}}" class="btn danger sm"
-                   onclick="return confirm('Slet dette ønske?');">Slet</a>
+                <form th:action="@{'/wish/delete/' + ${wish.id}}" method="post"
+                      style="display:inline;" onsubmit="return confirm('Slet dette ønske?');">
+                    <button type="submit" class="btn danger sm">Slet</button>
+                </form>
             </div>
         </article>
+
+        <!-- Add-tile: inline nyt ønske -->
+        <div class="wl-add wish-add">
+            <form th:action="@{'/wish/add/' + ${wishlist.id}}" method="post">
+                <div class="plus-wrap">
+                    <span class="plus">+</span>
+                </div>
+                <div class="add-title">Nyt ønske</div>
+                <div class="add-sub">Beskrivelse, link og pris.</div>
+                <input type="text" name="description" required
+                       placeholder="Hvad ønsker du dig?"
+                       class="add-input">
+                <input type="url" name="link"
+                       placeholder="Link (valgfrit)"
+                       class="add-input">
+                <input type="number" step="0.01" name="price" required
+                       placeholder="Pris (kr)"
+                       class="add-input">
+                <button type="submit" class="btn primary sm">Tilføj ønske</button>
+            </form>
+        </div>
     </div>
 </main>
 
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 
 <script>
-    function copyShareLink() {
-        const input = document.getElementById('share-link');
-        const url = window.location.origin + input.value;
+    function copyShare(btn) {
+        const path = btn.getAttribute('data-share');
+        const url = window.location.origin + path;
         navigator.clipboard.writeText(url).then(() => {
-            const btn = event.target;
-            const original = btn.textContent;
-            btn.textContent = '✔ Kopieret!';
-            setTimeout(() => btn.textContent = original, 1600);
+            const lbl = btn.querySelector('.lbl');
+            const original = lbl.textContent;
+            lbl.textContent = 'Kopieret!';
+            btn.classList.add('ok');
+            setTimeout(() => {
+                lbl.textContent = original;
+                btn.classList.remove('ok');
+            }, 1600);
         });
     }
 </script>

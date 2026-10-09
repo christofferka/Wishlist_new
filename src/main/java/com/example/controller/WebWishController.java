@@ -51,9 +51,11 @@ public class WebWishController {
     //  REDIGER ØNSKE
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (session.getAttribute("currentUser") == null) return "redirect:/login";
+        User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) return "redirect:/login";
 
         return wishService.getWishById(id)
+                .filter(w -> w.getWishlist().getUser().getId().equals(currentUser.getId()))
                 .map(wish -> {
                     model.addAttribute("wish", wish);
                     return "edit";
@@ -67,6 +69,7 @@ public class WebWishController {
         if (currentUser == null) return "redirect:/login";
 
         return wishService.getWishById(id)
+                .filter(w -> w.getWishlist().getUser().getId().equals(currentUser.getId()))
                 .map(existing -> {
                     existing.setDescription(updatedWish.getDescription());
                     existing.setLink(updatedWish.getLink());
@@ -78,7 +81,7 @@ public class WebWishController {
     }
 
     //  SLET ØNSKE
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteWish(@PathVariable Long id, HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser == null) return "redirect:/login";

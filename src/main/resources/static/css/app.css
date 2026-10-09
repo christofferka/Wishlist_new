@@ -61,7 +61,10 @@ html, body {
     font-size: 16px;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 a { color: var(--pink); text-decoration: none; font-weight: 600; }
@@ -425,35 +428,159 @@ main.page {
     flex-wrap: wrap;
 }
 
-.share-field {
+/* Add-card: tile at end of wishlist grid for creating new list */
+.wl-add {
+    position: relative;
     display: flex;
-    gap: 6px;
-    align-items: stretch;
+    align-items: center;
+    justify-content: center;
+    padding: 26px 20px;
+    background: var(--paper);
+    border: 2.5px dashed var(--ink);
+    border-radius: var(--radius-lg);
+    min-height: 240px;
+    transition: transform .22s ease, background .22s ease, box-shadow .22s ease;
+    transform: rotate(0.6deg);
 }
-.share-field input {
-    flex: 1;
-    min-width: 0;
+.wl-add:hover {
+    transform: rotate(0) translate(-3px, -3px);
+    background: var(--sun-soft);
+    box-shadow: var(--sh-sticker);
+    border-style: solid;
+}
+.wl-add form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    text-align: center;
+}
+.wl-add .plus-wrap {
+    width: 64px; height: 64px;
+    display: grid; place-items: center;
+    background: var(--pink);
+    color: #fff;
+    border: var(--border);
+    border-radius: 50%;
+    box-shadow: var(--sh-sticker-sm);
+    margin-bottom: 8px;
+    transform: rotate(-6deg);
+    transition: transform .25s ease;
+}
+.wl-add:hover .plus-wrap { transform: rotate(8deg) scale(1.08); }
+.wl-add .plus {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 44px;
+    line-height: 1;
+    margin-top: -4px;
+}
+.wl-add .add-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: var(--ink);
+    line-height: 1.1;
+}
+.wl-add .add-sub {
+    font-family: var(--font-hand);
+    font-size: 1.1rem;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+}
+.wl-add .add-input {
+    width: 100%;
+    max-width: 240px;
     font-family: var(--font-sans);
-    font-size: 12px;
-    padding: 8px 10px;
-    border: var(--border-thin);
+    font-size: 14px;
+    text-align: center;
+    padding: 9px 12px;
+    border: var(--border);
     border-radius: 999px;
-    background: var(--paper-2);
-    color: var(--ink-2);
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    box-shadow: var(--sh-sticker-xs);
+    transition: transform .1s, box-shadow .15s;
 }
-.share-field button {
-    padding: 8px 14px;
-    font-size: 13px;
-    font-weight: 700;
+.wl-add .add-input::placeholder { color: var(--ink-4); font-style: italic; }
+.wl-add .add-input:focus { transform: translate(-1px,-1px); box-shadow: var(--sh-sticker-sm); }
+
+/* Share pill: single compact button w/ copy-to-clipboard */
+.share-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px 6px 10px;
     border: var(--border);
     background: var(--sun);
     color: var(--ink);
     border-radius: 999px;
     cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
     box-shadow: var(--sh-sticker-xs);
-    transition: transform .15s, box-shadow .15s;
+    transition: transform .15s, box-shadow .15s, background .15s;
+    align-self: flex-start;
 }
-.share-field button:hover { transform: translate(-1px,-1px); box-shadow: var(--sh-sticker-sm); }
+.share-pill:hover { transform: translate(-1px,-1px); box-shadow: var(--sh-sticker-sm); }
+.share-pill .ic {
+    width: 22px; height: 22px;
+    display: grid; place-items: center;
+    background: var(--paper);
+    border: var(--border-thin);
+    border-radius: 50%;
+    font-size: 11px;
+}
+.share-pill.ok { background: var(--lime); }
+
+/* Wish-add tile: compact inline wish form inside wish grid */
+.wish-add { min-height: 240px; padding: 20px; }
+.wish-add .plus-wrap { width: 54px; height: 54px; margin-bottom: 6px; }
+.wish-add .plus { font-size: 36px; }
+.wish-add .add-title { font-size: 1.3rem; }
+.wish-add form { gap: 7px; }
+.wish-add .add-input { padding: 8px 12px; font-size: 13.5px; }
+
+/* Share bar (on single wishlist page) */
+.share-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px 8px 14px;
+    background: var(--paper);
+    border: var(--border);
+    border-radius: 999px;
+    box-shadow: var(--sh-sticker-sm);
+    flex-wrap: wrap;
+    transform: rotate(-0.5deg);
+}
+.share-bar-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+.share-bar-label .share-ic {
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    background: var(--sun);
+    border: var(--border);
+    border-radius: 50%;
+    font-size: 14px;
+    box-shadow: var(--sh-sticker-xs);
+    transform: rotate(-8deg);
+}
+.share-bar-actions { display: inline-flex; gap: 8px; align-items: center; }
 
 /* ============== WISH CARD (polaroid) ============== */
 
@@ -480,6 +607,24 @@ main.page {
     z-index: 2;
 }
 .wish-card.reserved { background: var(--lime-soft); }
+
+/* washi tape at top of each wish */
+.wish-card::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    width: 58px; height: 20px;
+    background: var(--pink);
+    border: var(--border-thin);
+    opacity: 0.92;
+    transform: rotate(-5deg);
+    box-shadow: var(--sh-sticker-xs);
+    z-index: 1;
+}
+.wish-card:nth-child(4n+1)::before { background: var(--sun);  left: 20px; transform: rotate(-6deg); }
+.wish-card:nth-child(4n+2)::before { background: var(--sky);  left: 36px; transform: rotate(5deg); }
+.wish-card:nth-child(4n+3)::before { background: var(--lime); left: 24px; transform: rotate(-3deg); }
+.wish-card:nth-child(4n+4)::before { background: var(--pink); left: 44px; transform: rotate(7deg); }
 
 /* reserved ribbon */
 .wish-card .ribbon {
@@ -934,30 +1079,30 @@ main.page {
 /* ============== FEATURES ============== */
 
 .feature-section {
-    padding: 48px var(--pad-x) 56px;
+    padding: 64px var(--pad-x);
     max-width: var(--page-max);
     margin: 0 auto;
 }
-.feature-section .grid-3 { gap: 20px; }
+.feature-section .grid-3 { gap: 24px; }
 .feature-section .head {
     text-align: center;
     max-width: 640px;
-    margin: 0 auto 28px;
+    margin: 0 auto 40px;
 }
 .feature-section .head h2 {
-    font-size: clamp(1.6rem, 3vw, 2.1rem);
-    margin: 12px 0 8px;
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    margin: 16px 0 10px;
     font-style: italic;
     font-weight: 500;
 }
-.feature-section .head .lede { font-size: 1rem; }
+.feature-section .head .lede { font-size: 1.05rem; }
 
 .feat {
-    padding: 18px 20px 20px;
+    padding: 22px 22px 24px;
     background: var(--paper);
     border: var(--border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--sh-sticker-sm);
+    box-shadow: var(--sh-sticker);
     transition: transform .2s, box-shadow .2s;
     position: relative;
 }
@@ -971,11 +1116,11 @@ main.page {
 .feat:nth-child(even):hover { transform: rotate(0) translate(-3px,-3px); }
 
 .feat .ic {
-    width: 40px; height: 40px;
-    border-radius: 10px;
+    width: 46px; height: 46px;
+    border-radius: 12px;
     display: grid; place-items: center;
-    font-size: 20px;
-    margin-bottom: 10px;
+    font-size: 23px;
+    margin-bottom: 14px;
     border: var(--border);
     box-shadow: var(--sh-sticker-xs);
 }
@@ -986,12 +1131,12 @@ main.page {
 
 .feat h3 {
     font-family: var(--font-serif);
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-style: italic;
     font-weight: 500;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
-.feat p { color: var(--ink-2); font-size: 13.5px; line-height: 1.45; }
+.feat p { color: var(--ink-2); font-size: 14.5px; line-height: 1.5; }
 
 /* ============== CTA BAND ============== */
 
@@ -1069,3 +1214,118 @@ main.page {
 [data-stagger="4"] { animation-delay: .23s; }
 [data-stagger="5"] { animation-delay: .29s; }
 [data-stagger="6"] { animation-delay: .35s; }
+
+/* ============== MOBILE / iPhone tweaks ============== */
+
+/* Prevent iOS zoom-on-focus: inputs must be ≥16px */
+@media (max-width: 820px) {
+    .field input,
+    .field textarea,
+    .field select,
+    .add-input,
+    .wish-add .add-input {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 760px) {
+    :root { --pad-x: 18px; }
+
+    main.page { padding: 28px var(--pad-x) 64px; }
+
+    /* Header: wrap neatly, drop the brand label if ultra narrow */
+    .site-header .inner { gap: 10px; padding: 12px var(--pad-x); flex-wrap: wrap; }
+    .site-nav { flex: 1 1 100%; order: 3; justify-content: center; }
+    .site-nav a { font-size: 14px; padding: 7px 12px; }
+    .site-actions { gap: 8px; }
+    .brand { font-size: 18px; gap: 10px; }
+    .brand .mark { width: 36px; height: 36px; font-size: 17px; }
+
+    /* Hero */
+    .hero { padding: 48px var(--pad-x) 40px; }
+    .hero h1 { font-size: clamp(2.2rem, 10vw, 3.4rem); max-width: 100%; }
+    .hero h1 em { padding: 0 10px 1px; }
+    .hero .lede { font-size: 1.05rem; margin-bottom: 24px; }
+    .hero .cta-row { flex-direction: column; width: 100%; }
+    .hero .cta-row .btn { width: 100%; }
+    .hero-collage { margin-top: 36px !important; gap: 20px; }
+    .tag { padding: 20px 18px; min-height: 150px; }
+    /* Flatten rotations so cards don't overflow at full width */
+    .tag:nth-child(1), .tag:nth-child(2), .tag:nth-child(3) {
+        transform: rotate(-0.6deg) !important;
+    }
+    .tag:nth-child(2) { transform: rotate(0.6deg) translateY(0) !important; }
+    .tag:nth-child(3) { transform: rotate(-0.3deg) !important; }
+
+    /* Features */
+    .feature-section { padding: 40px var(--pad-x); }
+    .feature-section .head { margin-bottom: 24px; }
+    .feat:nth-child(odd), .feat:nth-child(even) { transform: rotate(0); }
+
+    /* Grid cards: reduce rotation so they don't peek outside viewport */
+    .wl-card:nth-child(3n+1),
+    .wl-card:nth-child(3n+2),
+    .wl-card:nth-child(3n+3) { transform: rotate(0); }
+    .wl-card { min-height: auto; }
+    .wish-card:nth-child(4n+1),
+    .wish-card:nth-child(4n+2),
+    .wish-card:nth-child(4n+3),
+    .wish-card:nth-child(4n+4) { transform: rotate(0); }
+    .wish-card { min-height: auto; }
+
+    .wl-add, .wish-add { transform: rotate(0); min-height: auto; padding: 24px 20px; }
+
+    /* Page head: stack title above actions */
+    .page-head { gap: 16px; padding-bottom: 20px; margin-bottom: 24px; }
+    .page-head h1 { font-size: clamp(2rem, 7vw, 2.6rem); }
+    .page-head .actions { width: 100%; }
+
+    /* Share bar: let the pills stack */
+    .share-bar {
+        flex-direction: column;
+        align-items: stretch;
+        border-radius: 20px;
+        padding: 12px 14px;
+        gap: 10px;
+        transform: rotate(0);
+    }
+    .share-bar-actions { justify-content: space-between; }
+    .share-bar-actions .share-pill { flex: 1; justify-content: center; }
+
+    /* Auth: single column, drop showcase */
+    .auth { grid-template-columns: 1fr; }
+    .auth .stage { padding: 36px var(--pad-x); }
+    .auth .showcase { display: none; }
+    .auth .stage h1 { font-size: clamp(2rem, 7vw, 2.6rem); }
+
+    /* Wish card ribbon stays inside */
+    .wish-card .ribbon { right: 8px; top: -10px; transform: rotate(5deg); }
+
+    /* Make all buttons more thumb-friendly */
+    .btn { min-height: 44px; }
+    .btn.sm { min-height: 36px; }
+
+    /* CTA band */
+    .cta-band { padding: 48px var(--pad-x); }
+    .cta-band .btn { width: 100%; }
+
+    /* Crumbs tighter */
+    .crumbs { font-size: 16px; margin-bottom: 16px; }
+}
+
+/* Extra-small: very narrow iPhones (SE, mini) */
+@media (max-width: 380px) {
+    .brand span:not(.mark) { display: none; }  /* just the W mark */
+    .site-nav a { font-size: 13px; padding: 6px 10px; }
+    .user-chip { padding: 3px 3px 3px 10px; font-size: 12px; }
+    .user-chip .avatar { width: 24px; height: 24px; font-size: 10px; }
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}

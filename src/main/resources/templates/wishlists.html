@@ -13,28 +13,7 @@
         </div>
     </div>
 
-    <section class="card mb-6">
-        <div class="card-head">
-            <h3>Ny ønskeseddel</h3>
-            <span class="eyebrow sun">🎁 Hurtig oprettelse</span>
-        </div>
-        <form class="form wide" th:action="@{/wishes/createList}" th:object="${newWishlist}" method="post"
-              style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
-            <div class="field" style="flex:1; min-width: 260px;">
-                <label for="name">Navn på ønskeseddel</label>
-                <input id="name" type="text" th:field="*{name}" required placeholder="Fx 'Nyfødt baby'">
-            </div>
-            <button type="submit" class="btn primary">+ Opret ønskeseddel</button>
-        </form>
-    </section>
-
-    <div th:if="${wishlists.isEmpty()}" class="empty">
-        <span class="em">🎁</span>
-        <strong>Ingen ønskesedler endnu</strong>
-        <span>Lav din første ønskeseddel ovenfor, det tager under et minut.</span>
-    </div>
-
-    <div class="grid-3" th:unless="${wishlists.isEmpty()}">
+    <div class="grid-3">
         <div class="wl-card"
              th:each="list, iter : ${wishlists}"
              th:classappend="'g' + ${(iter.index % 6) + 1}"
@@ -51,19 +30,36 @@
                 </div>
             </div>
 
-            <div class="share-field">
-                <input type="text" readonly
-                       th:value="@{|/wishes/share/${list.shareId}|}"
-                       th:id="'share-' + ${list.id}">
-                <button type="button" th:onclick="|copyShare('share-${list.id}', this)|">Kopiér</button>
-            </div>
+            <button type="button" class="share-pill"
+                    th:attr="data-share=@{|/wishes/share/${list.shareId}|}"
+                    onclick="copyShare(this)">
+                <span class="ic">🔗</span>
+                <span class="lbl">Kopiér delingslink</span>
+            </button>
 
             <div class="actions-row">
                 <a th:href="@{'/wishes/viewlist/' + ${list.id}}" class="btn primary sm">Åbn</a>
                 <a th:href="@{'/wishes/share/' + ${list.shareId}}" class="btn ghost sm" target="_blank">Vis delt</a>
-                <a th:href="@{'/wishes/deletelist/' + ${list.id}}" class="btn danger sm"
-                   onclick="return confirm('Slet denne ønskeseddel?');">Slet</a>
+                <form th:action="@{'/wishes/deletelist/' + ${list.id}}" method="post"
+                      style="display:inline;" onsubmit="return confirm('Slet denne ønskeseddel?');">
+                    <button type="submit" class="btn danger sm">Slet</button>
+                </form>
             </div>
+        </div>
+
+        <!-- Add-kort: altid synligt, åbner inline form -->
+        <div class="wl-add" id="addCard">
+            <form th:action="@{/wishes/createList}" th:object="${newWishlist}" method="post">
+                <div class="plus-wrap">
+                    <span class="plus">+</span>
+                </div>
+                <div class="add-title">Ny ønskeseddel</div>
+                <div class="add-sub">Giv den et navn og den er klar.</div>
+                <input type="text" th:field="*{name}" required
+                       placeholder="Navn på ønskeseddel"
+                       class="add-input">
+                <button type="submit" class="btn primary sm">Opret</button>
+            </form>
         </div>
     </div>
 </main>
@@ -71,13 +67,18 @@
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 
 <script>
-    function copyShare(id, btn) {
-        const input = document.getElementById(id);
-        const url = window.location.origin + input.value;
+    function copyShare(btn) {
+        const path = btn.getAttribute('data-share');
+        const url = window.location.origin + path;
         navigator.clipboard.writeText(url).then(() => {
-            const original = btn.textContent;
-            btn.textContent = '✔ Kopieret';
-            setTimeout(() => btn.textContent = original, 1600);
+            const lbl = btn.querySelector('.lbl');
+            const original = lbl.textContent;
+            lbl.textContent = 'Kopieret!';
+            btn.classList.add('ok');
+            setTimeout(() => {
+                lbl.textContent = original;
+                btn.classList.remove('ok');
+            }, 1600);
         });
     }
 </script>

@@ -71,7 +71,7 @@ public class WebWishlistController {
     }
 
     //  SLET ØNSKESEDDEL
-    @GetMapping("/deletelist/{id}")
+    @PostMapping("/deletelist/{id}")
     public String deleteWishlist(@PathVariable Long id, HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser == null) return "redirect:/login";
