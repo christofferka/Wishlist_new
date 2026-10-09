@@ -1313,12 +1313,26 @@ main.page {
     .crumbs { font-size: 16px; margin-bottom: 16px; }
 }
 
-/* Extra-small: very narrow iPhones (SE, mini) */
-@media (max-width: 380px) {
-    .brand span:not(.mark) { display: none; }  /* just the W mark */
-    .site-nav a { font-size: 13px; padding: 6px 10px; }
-    .user-chip { padding: 3px 3px 3px 10px; font-size: 12px; }
-    .user-chip .avatar { width: 24px; height: 24px; font-size: 10px; }
+/* Phones (covers iPhone SE through 15 Pro Max) */
+@media (max-width: 540px) {
+    /* Keep header items from overflowing: hide labels, keep icons */
+    .brand span:not(.mark) { display: none; }
+    .brand { gap: 0; }
+    .brand .mark { width: 38px; height: 38px; font-size: 18px; }
+
+    .user-chip { padding: 3px; }
+    .user-chip > span:not(.avatar) { display: none; }
+    .user-chip .avatar { width: 32px; height: 32px; font-size: 13px; }
+
+    .site-actions .btn { padding: 8px 14px; font-size: 13px; min-height: 38px; }
+    .site-actions { gap: 6px; }
+
+    .site-header .inner { padding: 10px var(--pad-x); gap: 8px; }
+
+    /* Guarantee no element forces a wider page than viewport */
+    .site-header, main.page, .site-footer, .hero, .feature-section, .cta-band {
+        max-width: 100vw;
+    }
 }
 
 /* Respect prefers-reduced-motion */
