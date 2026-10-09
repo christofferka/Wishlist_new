@@ -185,9 +185,9 @@ em, .italic { font-style: italic; }
 
 .site-nav {
     display: flex;
-    gap: 4px;
+    gap: 6px;
     align-items: center;
-    flex: 1;
+    margin-left: auto;
 }
 .site-nav a {
     padding: 8px 14px;
@@ -196,38 +196,16 @@ em, .italic { font-style: italic; }
     font-weight: 600;
     font-size: 15px;
     transition: all .15s;
+    border: 1.5px solid transparent;
 }
 .site-nav a:hover { background: var(--paper-2); color: var(--ink); text-decoration: none; }
 .site-nav a.active {
     background: var(--ink);
     color: var(--paper);
+    border-color: var(--ink);
 }
 
-.site-actions { display: flex; align-items: center; gap: 10px; }
-
-.user-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 4px 4px 4px 14px;
-    border: var(--border);
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink);
-    background: var(--paper);
-    box-shadow: var(--sh-sticker-xs);
-}
-.user-chip .avatar {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: var(--sun);
-    color: var(--ink);
-    border: var(--border-thin);
-    display: grid; place-items: center;
-    font-size: 12px; font-weight: 800;
-    text-transform: uppercase;
-}
+.site-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 
 /* ============== BUTTONS ============== */
 
@@ -1233,12 +1211,11 @@ main.page {
 
     main.page { padding: 28px var(--pad-x) 64px; }
 
-    /* Header: wrap neatly, drop the brand label if ultra narrow */
-    .site-header .inner { gap: 10px; padding: 12px var(--pad-x); flex-wrap: wrap; }
-    .site-nav { flex: 1 1 100%; order: 3; justify-content: center; }
+    /* Header: compact inline on phones */
+    .site-header .inner { gap: 12px; padding: 10px var(--pad-x); }
     .site-nav a { font-size: 14px; padding: 7px 12px; }
     .site-actions { gap: 8px; }
-    .brand { font-size: 18px; gap: 10px; }
+    .brand { font-size: 17px; gap: 10px; }
     .brand .mark { width: 36px; height: 36px; font-size: 17px; }
 
     /* Hero */
@@ -1313,23 +1290,16 @@ main.page {
     .crumbs { font-size: 16px; margin-bottom: 16px; }
 }
 
-/* Phones (covers iPhone SE through 15 Pro Max) */
-@media (max-width: 540px) {
-    /* Keep header items from overflowing: hide labels, keep icons */
-    .brand span:not(.mark) { display: none; }
+/* Narrow phones: hide brand label, keep W + a single pill */
+@media (max-width: 440px) {
+    .brand .brand-text { display: none; }
     .brand { gap: 0; }
-    .brand .mark { width: 38px; height: 38px; font-size: 18px; }
-
-    .user-chip { padding: 3px; }
-    .user-chip > span:not(.avatar) { display: none; }
-    .user-chip .avatar { width: 32px; height: 32px; font-size: 13px; }
-
+    .brand .mark { width: 40px; height: 40px; font-size: 19px; }
+    .site-nav a { font-size: 13.5px; padding: 7px 12px; }
     .site-actions .btn { padding: 8px 14px; font-size: 13px; min-height: 38px; }
     .site-actions { gap: 6px; }
+    .site-header .inner { padding: 10px var(--pad-x); gap: 10px; }
 
-    .site-header .inner { padding: 10px var(--pad-x); gap: 8px; }
-
-    /* Guarantee no element forces a wider page than viewport */
     .site-header, main.page, .site-footer, .hero, .feature-section, .cta-band {
         max-width: 100vw;
     }

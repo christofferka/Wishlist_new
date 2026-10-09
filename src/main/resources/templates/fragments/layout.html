@@ -13,23 +13,21 @@
 <!-- =========== Header =========== -->
 <header class="site-header" th:fragment="header(active)">
     <div class="inner">
-        <a th:href="@{/}" class="brand">
+        <!-- Logget ind: W = log ud og tilbage til forsiden -->
+        <a th:if="${session.currentUser != null}" th:href="@{/logout}" class="brand" title="Log ud og tilbage til forsiden">
             <span class="mark">W</span>
-            <span>Wishlist</span>
+            <span class="brand-text">Wishlist</span>
         </a>
+        <!-- Ikke logget ind: W = forside -->
+        <a th:unless="${session.currentUser != null}" th:href="@{/}" class="brand">
+            <span class="mark">W</span>
+            <span class="brand-text">Wishlist</span>
+        </a>
+
         <nav class="site-nav" th:if="${session.currentUser != null}">
             <a th:href="@{/wishes/lists}" th:classappend="${active=='lists'} ? 'active' : ''">Mine ønskesedler</a>
         </nav>
-        <nav class="site-nav" th:unless="${session.currentUser != null}">
-            <a th:href="@{/}" th:classappend="${active=='home'} ? 'active' : ''">Forside</a>
-        </nav>
-        <div class="site-actions" th:if="${session.currentUser != null}">
-            <span class="user-chip">
-                <span th:text="${session.currentUser.username}">Bruger</span>
-                <span class="avatar" th:text="${#strings.substring(session.currentUser.username,0,1)}">C</span>
-            </span>
-            <a th:href="@{/logout}" class="btn ghost sm">Log ud</a>
-        </div>
+
         <div class="site-actions" th:unless="${session.currentUser != null}">
             <a th:href="@{/login}" class="btn ghost sm">Log ind</a>
             <a th:href="@{/register}" class="btn primary sm">Opret bruger</a>
